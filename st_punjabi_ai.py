@@ -90,12 +90,6 @@ def submit(input_text):
     else:
         return translate(answer_text, language)
 
-    
-    
-    
-    # Output answer to gui
-    # answer.setText(translated_answer.text)
-
 # Define what happens when the button is pressed.
 if submit:
     response = submit(input_text)
