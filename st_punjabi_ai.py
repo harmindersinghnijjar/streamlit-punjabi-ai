@@ -18,7 +18,7 @@ WAVE_OUTPUT_FILENAME = "input.wav"
 # Define OpenAI API keys.
 openai.apikey = os.getenv("OPENAI_API_KEY")
 
-st.title("ਪੰਜਾਬੀ ਏ.ਆਈ.")
+
 
 # Define the language translator.
 translator = googletrans.Translator()
@@ -33,6 +33,12 @@ def translate(text, language):
 # Select the language to translate to in the sidebar.
 language = st.sidebar.selectbox("Select Language", ("English", "Punjabi"))
 
+if language == "English":
+    st.title("English A.I.")
+else:
+    st.title("ਪੰਜਾਬੀ ਏ.ਆਈ.")
+
+
 # Define the text on the button depending on the language selected in the sidebar.
 if language == "English":
     button_text = "Start Recording 🔉"
@@ -45,15 +51,15 @@ record_button = st.button(button_text, key="record")
 
 # Define the input box depending on the language selected in the sidebar.
 if language == "English":
-    input_text = st.text_area("Input Text", value="", height=200, max_chars=None, key=None)
+    input_text = st.text_area("Input Text", value="", height=100, max_chars=None, key=None)
 else:
-    input_text = st.text_area("ਇੰਪੁੱਟ ਟੈਕਸਟ", value="", height=200, max_chars=None, key=None)
+    input_text = st.text_area("ਇੰਪੁੱਟ ਟੈਕਸਟ", value="", height=100, max_chars=None, key=None)
 
 # Define the text on the button depending on the language selected in the sidebar.
 if language == "English":
-    button_text = "Submit 🔉"
+    button_text = "Submit"
 else:
-    button_text = "ਜਮ੍ਹਾਂ ਕਰੋ 🔉"
+    button_text = "ਜਮ੍ਹਾਂ ਕਰੋ"
 
 submit = st.button(button_text, key="submit")
 
@@ -74,12 +80,18 @@ def submit(input_text):
     
     # Get answer
     answer_text = response['choices'][0]['text']
-    print(answer_text)
-    
+
     # Translate answer to Punjabi
     translator = googletrans.Translator()
-    translated_answer = translator.translate(answer_text, dest='pa')
-    return translated_answer
+    # translated_answer = translator.translate(answer_text, dest='pa')
+    
+    if language == "English":
+        return answer_text
+    else:
+        return translate(answer_text, language)
+
+    
+    
     
     # Output answer to gui
     # answer.setText(translated_answer.text)
@@ -87,8 +99,12 @@ def submit(input_text):
 # Define what happens when the button is pressed.
 if submit:
     response = submit(input_text)
-    st.markdown(f"**Output Text:** {response.text}")
-    response = response.text
+    # st.markdown(f"**Output Text:** {response.text}")
+    if language == "English":
+        st.text_area("Output Text", value=response, height=200, max_chars=None, key=None)
+    else:
+        st.text_area("ਆਉਟਪੁੱਟ ਟੈਕਸਟ", value=response, height=200, max_chars=None, key=None)
+    response = response
 
 # Define function to read out loud
 def tts(response):
