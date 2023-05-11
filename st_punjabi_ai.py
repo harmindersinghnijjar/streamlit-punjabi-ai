@@ -87,13 +87,24 @@ else:
 
 record_button = st.button(button_text, key="record")                                                
 
-# Record the audio when the button is pressed.
 
 # Define the input box depending on the language selected in the sidebar.
 if language == "English":
     input_text = st.text_area("Input Text", value="", height=100, max_chars=None, key=None)
 else:
     input_text = st.text_area("ਇੰਪੁੱਟ ਟੈਕਸਟ", value="", height=100, max_chars=None, key=None)
+
+# Call the stt function when the button is pressed.
+if record_button:
+    stt()
+    # Add text to the input box.
+    with open("my_speech.txt", mode="r", encoding="utf-8") as file:
+        text = file.read()
+    if language == "English":
+        st.text_area("Input Text", value=text, height=100, max_chars=None, key=None)
+    else:
+        st.text_area("ਇੰਪੁੱਟ ਟੈਕਸਟ", value=text, height=100, max_chars=None, key=None)
+    input_text = text
 
 # Define the text on the button depending on the language selected in the sidebar.
 if language == "English":
@@ -146,7 +157,7 @@ def tts(response):
     text = response
 
     apikey = 'YOUR_API_KEY'
-    voice = 'Navneet'
+    voice = 'Zareen'
     text = text
     url = f'https://api.narakeet.com/text-to-speech/m4a?voice={voice}'
     
