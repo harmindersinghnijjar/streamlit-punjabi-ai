@@ -6,6 +6,7 @@ import openai
 import os
 import googletrans
 import time
+import speech_recognition as sr
 import vlc
 
 FORMAT = pyaudio.paInt16
@@ -18,6 +19,45 @@ WAVE_OUTPUT_FILENAME = "input.wav"
 # Define OpenAI API keys.
 openai.apikey = os.getenv("OPENAI_API_KEY")
 
+def stt():
+    # Create recognizer object.
+    r = sr.Recognizer()
+
+
+    with sr.Microphone() as source:
+        r.adjust_for_ambient_noise(source)
+        print("Converting Audio To Text ..... ")
+        audio = r.listen(source)
+
+
+    # Detect the langauge spoken.
+    lang = r.recognize_google(audio, language="pa-IN")
+    print("Language Spoken Is : " + lang)
+
+    # Convert speech to text in Gurumukhi.
+    try:
+        print("Converted Audio Is : \n" + r.recognize_google(audio, language="pa-IN"))
+        # Write to a file in Gurumukhi.
+        with open("my_speech.txt", mode="w", encoding="utf-8") as file:
+            file.write(r.recognize_google(audio, language="pa-IN"))
+        
+
+
+    # If the speech is not recognized or there is an error.
+    except sr.UnknownValueError:
+        print("Google Speech Recognition could not understand audio, unknown error")
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+
+    # Use googletrans to translate the text to English.
+    from googletrans import Translator
+    translator = Translator()
+    # Read the file in Gurumukhi.
+    with open("my_speech.txt", mode="r", encoding="utf-8") as file:
+        text = file.read()
+    # Translate the text to English.
+    translated_text = translator.translate(text, dest="en")
+    print(translated_text.text)
 
 
 # Define the language translator.
